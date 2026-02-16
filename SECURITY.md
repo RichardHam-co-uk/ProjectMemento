@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-The following versions of [Project Name] are currently being supported with security updates.
+The following versions of Project Memento are currently being supported with security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,7 +11,7 @@ The following versions of [Project Name] are currently being supported with secu
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within this project, please send an e-mail to [INSERT EMAIL ADDRESS]. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within this project, please send an e-mail to tbc@richardham.co.uk. All security vulnerabilities will be promptly addressed.
 
 Please include the following in your report:
 - Type of issue (e.g., SQL injection, cross-site scripting, etc.)

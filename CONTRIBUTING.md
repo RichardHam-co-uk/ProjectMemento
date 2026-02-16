@@ -1,6 +1,6 @@
-# Contributing to [Project Name]
+# Contributing to Project Memento
 
-First off, thank you for considering contributing to [Project Name]! It's people like you that make this community such a great place.
+First off, thank you for considering contributing to Project Memento! It's people like you that make this community such a great place.
 
 ## 🌈 Our Philosophy
 We aim for high-quality, maintainable code and a welcoming environment. Please follow these guidelines to help us maintain this standard.
@@ -22,6 +22,13 @@ We aim for high-quality, maintainable code and a welcoming environment. Please f
 3. **Write Tests**: If you add code, add tests!
 4. **Update Docs**: Ensure README and other docs reflect your changes.
 5. **Detailed PR**: Use the [PR Template](.github/PULL_REQUEST_TEMPLATE.md).
+
+### AI-Assisted Contributions
+- **Branch naming**: Use `ai/<short-topic>` for AI-assisted work.
+- **Human sponsor**: A human contributor must own the PR and be accountable for the final changes.
+- **Disclosure**: Note AI usage in the PR template and summarize prompts or tools used.
+- **Verification**: The human sponsor confirms tests, security checks, and reviews are complete.
+- **No secrets**: Never include secrets or private data in AI prompts or outputs.
 
 ## 🛠️ Development Setup
 See the [Development Playbook](./docs/playbooks/development.md) for a deep dive into local setup and workflows.

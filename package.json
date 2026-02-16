@@ -1,0 +1,22 @@
+{
+  "name": "project-memento",
+  "version": "0.1.0",
+  "description": "Project Memento - A modern project template for AI and Human collaboration.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "nodemon": "^3.1.0"
+  }
+}
