@@ -8,33 +8,44 @@ This file provides context for any Claude session (local or cloud) working on th
 
 **Tech stack:** Python 3.13 · Poetry · FastAPI · SQLAlchemy 2.0 · SQLite (WAL) · Qdrant · Fernet encryption · Argon2id · Typer CLI · Rich
 
-## Current Status (Updated: 2026-02-17)
+## Current Status (Updated: 2026-02-17, Session 3)
 
 ### Completed
 - **Milestone 1.1 (Scaffolding):** Full Python package structure, Pydantic config, ORM models, minimal CLI
-- **Milestone 1.2-1.3 (Partial):** KeyManager (crypto.py), BlobStore (blobs.py), SessionManager (session.py)
+- **Milestone 1.2-1.3 (Core Security):** KeyManager (crypto.py), BlobStore (blobs.py), SessionManager (session.py) — all smoke tested
+- **Opus Review:** Task assignments verified, Gantt chart created, build order confirmed (see `docs/OPUS_REVIEW_2026-02-17.md`)
 
 ### In Progress — Phase 1: Foundation & ChatGPT Import
 See `docs/tasks/` for detailed task files with prompts and acceptance criteria.
 
 ### What Still Needs Building
-| Task | File | Status | Assigned To |
-|------|------|--------|-------------|
-| 1.2.2 Migration system | `vault/storage/migrations.py` | Not started | Local LLM / Gemini |
-| 1.4.1 Database wrapper | `vault/storage/db.py` | Not started | Gemini / Haiku |
-| 1.6.1 Base adapter interface | `vault/ingestion/base.py` | Not started | Local LLM |
-| 1.6.2 ChatGPT adapter | `vault/ingestion/chatgpt.py` | Not started | Claude Sonnet |
-| 1.4.2 vault init CLI | `vault/cli/main.py` | Not started | Claude Sonnet |
-| 1.5.2 Session CLI integration | `vault/cli/main.py` | Not started | Claude Haiku |
-| 1.8.1 Import pipeline | `vault/ingestion/pipeline.py` | Not started | Claude Sonnet |
-| 1.8.2 vault import CLI | `vault/cli/main.py` | Not started | Claude Haiku |
-| 1.9.1 vault list command | `vault/cli/main.py` | Not started | Local LLM |
-| 1.9.2 vault show command | `vault/cli/main.py` | Not started | Claude Haiku |
-| 1.9.3 vault stats command | `vault/cli/main.py` | Not started | Local LLM |
-| 1.9.4 Error handling polish | `vault/cli/main.py` | Not started | Claude Haiku |
-| Unit tests | `tests/test_*.py` | Not started | Claude Haiku |
-| Integration tests | `tests/test_integration.py` | Not started | Claude Sonnet |
-| Security review | (review only) | Not started | Claude Opus |
+| Task | File | Status | Assigned To | Branch |
+|------|------|--------|-------------|--------|
+| 1.2.2 Migration system | `vault/storage/migrations.py` | Not started | Local LLM (Qwen/DeepSeek) | ai/feat-local-scaffolding |
+| 1.4.1 Database wrapper | `vault/storage/db.py` | Not started | Sonnet/Gemini | ai/feat-cloud-tasks |
+| 1.6.1 Base adapter interface | `vault/ingestion/base.py` | Not started | Local LLM (Qwen/DeepSeek) | ai/feat-local-scaffolding |
+| 1.6.2 ChatGPT adapter | `vault/ingestion/chatgpt.py` | Not started | Claude Code (Sonnet) | ai/feat-core-infrastructure |
+| 1.4.2 vault init CLI | `vault/cli/main.py` | Not started | Claude Code (Sonnet) | ai/feat-core-infrastructure |
+| 1.5.2 Session CLI integration | `vault/cli/main.py` | Not started | Claude Haiku | ai/feat-cloud-tasks |
+| 1.8.1 Import pipeline | `vault/ingestion/pipeline.py` | Not started | Claude Code (Sonnet) | ai/feat-core-infrastructure |
+| 1.8.2 vault import CLI | `vault/cli/main.py` | Not started | Claude Haiku | ai/feat-cloud-tasks |
+| 1.9.1 vault list command | `vault/cli/main.py` | Not started | Local LLM/Copilot | ai/feat-local-scaffolding |
+| 1.9.2 vault show command | `vault/cli/main.py` | Not started | Claude Haiku | ai/feat-cloud-tasks |
+| 1.9.3 vault stats command | `vault/cli/main.py` | Not started | Local LLM/Copilot | ai/feat-local-scaffolding |
+| 1.9.4 Error handling polish | `vault/cli/main.py` | Not started | Claude Haiku | ai/feat-cloud-tasks |
+| Unit tests | `tests/test_*.py` | Not started | Claude Haiku | ai/feat-cloud-tasks |
+| Integration tests | `tests/test_integration.py` | Not started | Claude Code (Sonnet) | ai/feat-core-infrastructure |
+| Security review | (review only) | Partial (assignment review done) | Claude Opus | — |
+| Test scaffolding | `tests/` | Not started | Local LLM (Llama3b) | ai/feat-local-scaffolding |
+| Research x3 | `docs/tasks/RESEARCH-RESULTS.md` | Not started | Perplexity | — |
+
+### Cloud Claude Quick-Start Tasks (no dependencies)
+If you're cloud Claude on mobile, start here:
+1. **Unit tests for crypto.py** — Read `vault/security/crypto.py`, write `tests/test_crypto.py`
+2. **Unit tests for blobs.py** — Read `vault/storage/blobs.py`, write `tests/test_blobs.py`
+3. **Unit tests for session.py** — Read `vault/security/session.py`, write `tests/test_session.py`
+
+These require no other modules to exist. Use Haiku. Commit to `ai/feat-cloud-tasks`.
 
 ## Branching Strategy
 

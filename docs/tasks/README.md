@@ -31,7 +31,7 @@ Work on branch: `ai/feat-cloud-tasks`
 
 | Task File | Model | Status | Depends On |
 |-----------|-------|--------|------------|
-| `TASK-1.4.1-db-wrapper.md` | Haiku/Sonnet | TODO | migrations.py |
+| `TASK-1.4.1-db-wrapper.md` | Sonnet (preferred) / Gemini | TODO | migrations.py |
 | (unit tests — see CLAUDE.md) | Haiku | TODO | modules to test must exist |
 | (vault show command) | Haiku | TODO | db.py + blobs.py + CLI |
 | (session CLI integration) | Haiku | TODO | session.py + vault init |
@@ -46,11 +46,12 @@ Work on branch: `ai/feat-core-infrastructure`
 | crypto.py (KeyManager) | DONE | — |
 | blobs.py (BlobStore) | DONE | crypto.py |
 | session.py (SessionManager) | DONE | crypto.py |
-| chatgpt.py (ChatGPTAdapter) | IN PROGRESS | base adapter |
+| chatgpt.py (ChatGPTAdapter) | TODO | base adapter |
 | vault init CLI | TODO | blobs.py + db.py |
 | import pipeline | TODO | chatgpt.py + db.py + blobs.py |
 | integration tests | TODO | all modules |
-| security review | TODO | crypto + blobs + session |
+| security review (code) | TODO | crypto + blobs + session |
+| **Opus review (assignments)** | **DONE** | — |
 
 ### Platform: Perplexity (Browser)
 | Task File | Status |
