@@ -1,0 +1,6 @@
+# TASK 1.2.2: Create Migration System
+
+[Full RISEN prompt from Phase 1 plan - Task 1.2.2: Create Migration System]
+See PHASE1_DETAILED_PLAN.md section "Task 1.2.2: Create Migration System" for complete prompt.
+
+Key deliverable: vault/storage/migrations.py with simple version tracking

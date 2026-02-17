@@ -1,0 +1,6 @@
+# TASK 1.6.1: Implement Base Adapter Interface
+
+[Full RISEN prompt from Phase 1 plan - Task 1.6.1: Implement Base Adapter Interface]
+See PHASE1_DETAILED_PLAN.md section "Task 1.6.1: Implement Base Adapter Interface" for complete prompt.
+
+Key deliverable: vault/ingestion/base.py with BaseAdapter protocol

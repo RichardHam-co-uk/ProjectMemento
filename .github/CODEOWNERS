@@ -1,8 +1,8 @@
-# Example owners. Replace with your real GitHub usernames or team slugs.
-*       @example-owner1 @example-owner2
+# Project Memento code owners
+*       @zebadee2kk
 
 # Documentation changes
-/docs/  @example-docs
+/docs/  @zebadee2kk
 
 # Security related files
-/SECURITY.md @example-security
+/SECURITY.md @zebadee2kk

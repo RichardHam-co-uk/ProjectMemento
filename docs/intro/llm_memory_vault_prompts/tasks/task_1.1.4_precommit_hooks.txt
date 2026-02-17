@@ -1,0 +1,201 @@
+# TASK 1.1.4: Setup Pre-commit Hooks
+
+## Context
+Automated code quality checks before commits to maintain consistent code style and catch issues early.
+
+## Your Role
+You are a DevOps engineer setting up code quality automation.
+
+## Objective
+Create `.pre-commit-config.yaml` and configure Git hooks for automatic code quality checks.
+
+## Instructions
+
+### 1. Create .pre-commit-config.yaml
+
+```yaml
+# Pre-commit hooks for LLM Memory Vault
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Code formatting
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+        language_version: python3.11
+        args: [--line-length=100]
+
+  # Linting and import sorting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+
+  # Type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-pyyaml, types-python-dateutil]
+        args: [--ignore-missing-imports]
+
+  # Generic checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: mixed-line-ending
+
+  # Security checks
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.6
+    hooks:
+      - id: bandit
+        args: [-ll, -i, -x, tests/]
+
+  # Docstring coverage
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.5.0
+    hooks:
+      - id: interrogate
+        args: [--verbose, --fail-under=50, --ignore-init-module]
+        files: ^vault/
+
+# Exclude patterns
+exclude: |
+    (?x)^(
+    vault_data/|
+    \.venv/|
+    \.git/|
+    __pycache__/
+    )$
+```
+
+### 2. Install Pre-commit
+
+```bash
+# Install pre-commit in development environment
+poetry add --group dev pre-commit
+
+# Install the git hooks
+poetry run pre-commit install
+
+# Run on all files to test
+poetry run pre-commit run --all-files
+```
+
+### 3. Create .pre-commit-config-update.sh Helper Script
+
+```bash
+#!/bin/bash
+# Update pre-commit hooks to latest versions
+# Run: ./pre-commit-config-update.sh
+
+poetry run pre-commit autoupdate
+poetry run pre-commit run --all-files
+```
+
+Make it executable:
+```bash
+chmod +x .pre-commit-config-update.sh
+```
+
+### 4. Test Pre-commit Hooks
+
+Create a test file with intentional issues:
+
+```python
+# test_precommit.py
+import os
+import sys
+
+def bad_function( ):  # Extra space before )
+    x=1+1  # Missing spaces
+    return x
+
+# Extra blank lines below
+
+
+```
+
+Then try to commit:
+```bash
+git add test_precommit.py
+git commit -m "test"
+```
+
+Should see:
+- black reformatting the file
+- ruff fixing imports
+- trailing-whitespace removing extra blank lines
+
+## Safety Constraints
+- ✅ Security scanning enabled (bandit, detect-private-key)
+- ✅ Large files blocked (>1MB)
+- ✅ Merge conflict markers detected
+- ✅ Private keys detected before commit
+
+## Hook Explanations
+
+### black
+- Automatic Python code formatting
+- Enforces consistent style
+- No configuration needed (opinionated)
+
+### ruff
+- Fast linter (Rust-based)
+- Replaces flake8, isort, pylint
+- Automatically fixes many issues
+
+### mypy
+- Static type checking
+- Catches type errors before runtime
+- Configured in pyproject.toml
+
+### bandit
+- Security vulnerability scanner
+- Detects common security issues
+- Ignores test files (args: -x tests/)
+
+### detect-private-key
+- Prevents committing API keys, SSH keys
+- Scans for common key patterns
+- Critical for security
+
+## Common Issues
+
+**Issue**: Pre-commit is slow
+**Solution**: Hooks run in parallel. First run is slowest.
+
+**Issue**: Black and another tool conflict
+**Solution**: Black should run first (as configured above)
+
+**Issue**: Can't commit due to hook failure
+**Solution**: Fix the issue or use `git commit --no-verify` (not recommended)
+
+## Acceptance Criteria
+- [ ] `.pre-commit-config.yaml` created
+- [ ] `pre-commit install` completes successfully
+- [ ] Hooks run on `git commit`
+- [ ] All hooks pass on initial codebase
+- [ ] black formats code automatically
+- [ ] ruff catches and fixes issues
+- [ ] mypy checks types
+- [ ] Security checks enabled
+- [ ] Can bypass with `--no-verify` if needed
+
+## Output Format
+Create the `.pre-commit-config.yaml` file and helper script as specified.
+
+## Next Task
+Task 1.2.1 will define SQLAlchemy ORM models for the database schema.

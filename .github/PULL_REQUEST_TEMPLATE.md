@@ -18,4 +18,6 @@
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
 - [ ] I have checked for any potential security vulnerabilities.
+- [ ] Type hints are complete (`mypy` passes).
+- [ ] No PII or secrets are exposed in code or logs.
 - [ ] AI-assisted changes (if any) are disclosed with a brief prompt/tool summary.

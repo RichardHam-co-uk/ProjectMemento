@@ -1,0 +1,6 @@
+# TASK 1.9.1: Implement `vault list` Command
+
+[Full RISEN prompt from Phase 1 plan - Task 1.9.1: Implement `vault list` Command]
+See PHASE1_DETAILED_PLAN.md section "Task 1.9.1: Implement `vault list` Command" for complete prompt.
+
+Key deliverable: vault/cli/main.py with list command

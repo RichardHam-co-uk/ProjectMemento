@@ -1,0 +1,11 @@
+# TASK 1.2.1: Define ORM Models
+
+[Full RISEN prompt from Phase 1 plan - Task 1.2.1: Define ORM Models]
+See PHASE1_DETAILED_PLAN.md section "Task 1.2.1: Define ORM Models" for complete prompt with:
+- Role: Database architect expert in SQLAlchemy and security
+- Instructions: Create 5 models (Conversation, Message, Artifact, PIIFinding, AuditEvent)
+- Safety constraints: No plaintext sensitive content, foreign keys enabled
+- Example code provided
+- Acceptance criteria defined
+
+Key deliverable: vault/storage/models.py with complete SQLAlchemy models

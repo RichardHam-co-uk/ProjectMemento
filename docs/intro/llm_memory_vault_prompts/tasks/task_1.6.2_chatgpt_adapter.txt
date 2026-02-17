@@ -1,0 +1,6 @@
+# TASK 1.6.2: Implement ChatGPT Adapter
+
+[Full RISEN prompt from Phase 1 plan - Task 1.6.2: Implement ChatGPT Adapter]
+See PHASE1_DETAILED_PLAN.md section "Task 1.6.2: Implement ChatGPT Adapter" for complete prompt.
+
+Key deliverable: vault/ingestion/chatgpt.py with ChatGPTAdapter class

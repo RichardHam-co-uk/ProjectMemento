@@ -4,18 +4,22 @@ As an AI agent contributing to this project, you must adhere to the following ru
 
 ## 1. Branching & Commits
 - Always work on a separate branch.
-- Use the prefix `ai/` followed by a descriptive name (e.g., `ai/setup-testing-framework`).
+- Use the prefix `ai/` followed by a descriptive name (e.g., `ai/setup-encryption-layer`).
 - Follow Conventional Commits for all commit messages.
 - Note AI usage in Pull Request descriptions.
 
 ## 2. Documentation
 - Keep playbooks in `docs/playbooks/` up to date.
 - Document new features in the `README.md` or dedicated docs.
-- Use JSDoc for functions and classes in the source code.
+- Use Python docstrings (Google style) for modules, functions, and classes.
 
 ## 3. Testing & Quality
 - Never submit a PR without tests.
-- Run `npm run lint` and `npm test` before considering a task complete.
+- Run all quality checks before considering a task complete:
+  - `poetry run pytest tests/ -v`
+  - `poetry run ruff check .`
+  - `poetry run black --check .`
+  - `poetry run mypy vault/`
 - Maintain at least 80% test coverage for new code.
 
 ## 4. Interaction

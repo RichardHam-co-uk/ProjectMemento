@@ -1,0 +1,6 @@
+# TASK 1.8.1: Implement Import Pipeline
+
+[Full RISEN prompt from Phase 1 plan - Task 1.8.1: Implement Import Pipeline]
+See PHASE1_DETAILED_PLAN.md section "Task 1.8.1: Implement Import Pipeline" for complete prompt.
+
+Key deliverable: vault/ingestion/pipeline.py with ImportPipeline class

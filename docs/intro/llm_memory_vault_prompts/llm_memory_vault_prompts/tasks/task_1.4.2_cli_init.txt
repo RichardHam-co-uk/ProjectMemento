@@ -1,0 +1,6 @@
+# TASK 1.4.2: Implement `vault init` Command
+
+[Full RISEN prompt from Phase 1 plan - Task 1.4.2: Implement `vault init` Command]
+See PHASE1_DETAILED_PLAN.md section "Task 1.4.2: Implement `vault init` Command" for complete prompt.
+
+Key deliverable: vault/cli/main.py with init command

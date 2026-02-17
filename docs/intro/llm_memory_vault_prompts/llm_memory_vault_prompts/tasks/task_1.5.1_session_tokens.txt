@@ -1,0 +1,8 @@
+# TASK 1.5.1: Implement Session Token System (SECURITY CRITICAL)
+
+[Full RISEN prompt from Phase 1 plan - Task 1.5.1: Implement Session Token System]
+See PHASE1_DETAILED_PLAN.md section "Task 1.5.1: Implement Session Token System" for complete prompt.
+
+CRITICAL: Session tokens must be cryptographically secure.
+
+Key deliverable: vault/security/session.py with SessionManager class
