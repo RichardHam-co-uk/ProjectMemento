@@ -329,8 +329,15 @@ A working vault system with:
 - Session-based authentication
 - Secure key management
 
-### Phase 2 Preview: Classification & Security
-- PII detection and redaction
+### Phase 2: Security & Sanitisation — NEXT
+- PII detection and redaction (Presidio + LLM Guard)
+- Policy engine (YAML-driven rules)
+- Audit logging (all vault operations)
+- Token vault (encrypted credential storage)
+- `vault sanitize`, `vault audit`, `vault token`, `vault policy` commands
+- **Full plan:** `docs/intro/PHASE2_DETAILED_PLAN.md`
+
+### Phase 3 Preview: Classification & Distillation
 - Domain taxonomy classification
 - Security policy engine
 - Sanitization pipeline

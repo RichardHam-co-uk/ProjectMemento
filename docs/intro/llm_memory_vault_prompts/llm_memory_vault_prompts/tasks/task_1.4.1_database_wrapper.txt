@@ -1,6 +1,0 @@
-# TASK 1.4.1: Implement Database Wrapper
-
-[Full RISEN prompt from Phase 1 plan - Task 1.4.1: Implement Database Wrapper]
-See PHASE1_DETAILED_PLAN.md section "Task 1.4.1: Implement Database Wrapper" for complete prompt.
-
-Key deliverable: vault/storage/db.py with VaultDB class

@@ -1,6 +1,0 @@
-# TASK 1.9.2: Implement `vault show` Command
-
-[Full RISEN prompt from Phase 1 plan - Task 1.9.2: Implement `vault show` Command]
-See PHASE1_DETAILED_PLAN.md section "Task 1.9.2: Implement `vault show` Command" for complete prompt.
-
-Key deliverable: vault/cli/main.py with show command

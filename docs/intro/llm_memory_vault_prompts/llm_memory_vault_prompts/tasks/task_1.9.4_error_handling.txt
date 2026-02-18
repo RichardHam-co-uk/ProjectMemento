@@ -1,6 +1,0 @@
-# TASK 1.9.4: Add Error Handling & Help Text
-
-[Full RISEN prompt from Phase 1 plan - Task 1.9.4: Add Error Handling & Help Text]
-See PHASE1_DETAILED_PLAN.md section "Task 1.9.4: Add Error Handling & Help Text" for complete prompt.
-
-Key deliverable: Polish all CLI commands with comprehensive error handling

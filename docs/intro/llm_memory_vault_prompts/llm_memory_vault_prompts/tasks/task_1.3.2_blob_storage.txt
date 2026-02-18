@@ -1,8 +1,0 @@
-# TASK 1.3.2: Implement Blob Storage (SECURITY CRITICAL)
-
-[Full RISEN prompt from Phase 1 plan - Task 1.3.2: Implement Blob Storage]
-See PHASE1_DETAILED_PLAN.md section "Task 1.3.2: Implement Blob Storage" for complete prompt.
-
-CRITICAL: All content must be encrypted before disk write.
-
-Key deliverable: vault/storage/blobs.py with BlobStore class
