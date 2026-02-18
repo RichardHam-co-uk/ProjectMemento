@@ -1,0 +1,90 @@
+[
+  {
+    "id": "conv-aaaa-1111-bbbb-2222-cccc",
+    "title": "Python Async Basics",
+    "create_time": 1707300000.0,
+    "update_time": 1707300120.0,
+    "mapping": {
+      "root-node-uuid": {
+        "id": "root-node-uuid",
+        "message": null,
+        "parent": null,
+        "children": ["msg-user-1"]
+      },
+      "msg-user-1": {
+        "id": "msg-user-1",
+        "message": {
+          "id": "msg-user-1",
+          "author": {"role": "user"},
+          "content": {
+            "content_type": "text",
+            "parts": ["How does async/await work in Python?"]
+          },
+          "create_time": 1707300010.0,
+          "metadata": {}
+        },
+        "parent": "root-node-uuid",
+        "children": ["msg-assistant-1"]
+      },
+      "msg-assistant-1": {
+        "id": "msg-assistant-1",
+        "message": {
+          "id": "msg-assistant-1",
+          "author": {"role": "assistant"},
+          "content": {
+            "content_type": "text",
+            "parts": ["Async/await in Python allows you to write concurrent code using coroutines. The async keyword defines a coroutine function, and await suspends execution until the awaited coroutine completes."]
+          },
+          "create_time": 1707300030.0,
+          "metadata": {"model_slug": "gpt-4"}
+        },
+        "parent": "msg-user-1",
+        "children": []
+      }
+    }
+  },
+  {
+    "id": "conv-dddd-3333-eeee-4444-ffff",
+    "title": "SQLAlchemy Tips",
+    "create_time": 1707400000.0,
+    "update_time": 1707400200.0,
+    "mapping": {
+      "root-2": {
+        "id": "root-2",
+        "message": null,
+        "parent": null,
+        "children": ["msg-u2"]
+      },
+      "msg-u2": {
+        "id": "msg-u2",
+        "message": {
+          "id": "msg-u2",
+          "author": {"role": "user"},
+          "content": {
+            "content_type": "text",
+            "parts": ["What are best practices for SQLAlchemy sessions?"]
+          },
+          "create_time": 1707400010.0,
+          "metadata": {}
+        },
+        "parent": "root-2",
+        "children": ["msg-a2"]
+      },
+      "msg-a2": {
+        "id": "msg-a2",
+        "message": {
+          "id": "msg-a2",
+          "author": {"role": "assistant"},
+          "content": {
+            "content_type": "text",
+            "parts": ["Always use sessions as context managers, commit explicitly, and avoid long-lived sessions. Use scoped_session for web applications."]
+          },
+          "create_time": 1707400050.0,
+          "metadata": {"model_slug": "gpt-4"}
+        },
+        "parent": "msg-u2",
+        "children": []
+      }
+    }
+  }
+]
