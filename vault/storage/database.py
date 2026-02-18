@@ -12,8 +12,9 @@ migration support and any additional query helpers needed.
 from __future__ import annotations
 
 from contextlib import contextmanager
+from datetime import datetime
 from pathlib import Path
-from typing import Generator, List, Optional
+from typing import Generator, List, Optional, Tuple
 
 import sqlalchemy as sa
 from sqlalchemy import create_engine, exists, select
@@ -148,3 +149,81 @@ class VaultDB:
         """
         with self.session() as s:
             return s.scalar(select(sa.func.count()).select_from(Message)) or 0
+
+    def list_conversations(
+        self,
+        limit: int = 20,
+        offset: int = 0,
+        source: Optional[str] = None,
+    ) -> List[Conversation]:
+        """Return a page of conversations ordered by created_at descending.
+
+        Args:
+            limit: Maximum number of rows to return.
+            offset: Number of rows to skip (for pagination).
+            source: Optional provider filter (e.g., ``"chatgpt"``).
+
+        Returns:
+            List of Conversation ORM objects (without eager-loaded messages).
+        """
+        with self.session() as s:
+            stmt = select(Conversation).order_by(Conversation.created_at.desc())
+            if source:
+                stmt = stmt.where(Conversation.source == source)
+            stmt = stmt.offset(offset).limit(limit)
+            return list(s.scalars(stmt))
+
+    def get_conversation(self, conversation_id: str) -> Optional[Conversation]:
+        """Fetch a single conversation by its primary-key ID.
+
+        Args:
+            conversation_id: The SHA-256-derived conversation ID.
+
+        Returns:
+            The Conversation ORM object, or None if not found.
+        """
+        with self.session() as s:
+            return s.get(Conversation, conversation_id)
+
+    def get_messages(self, conversation_id: str) -> List[Message]:
+        """Return all messages for a conversation, ordered by timestamp.
+
+        Args:
+            conversation_id: The conversation's primary-key ID.
+
+        Returns:
+            Ordered list of Message ORM objects.
+        """
+        with self.session() as s:
+            stmt = (
+                select(Message)
+                .where(Message.conversation_id == conversation_id)
+                .order_by(Message.timestamp)
+            )
+            return list(s.scalars(stmt))
+
+    def get_source_breakdown(self) -> List[tuple[str, int]]:
+        """Return conversation counts grouped by source provider.
+
+        Returns:
+            List of (source, count) tuples ordered by count descending.
+        """
+        with self.session() as s:
+            rows = s.execute(
+                select(Conversation.source, sa.func.count().label("cnt"))
+                .group_by(Conversation.source)
+                .order_by(sa.desc("cnt"))
+            ).all()
+            return [(row[0], row[1]) for row in rows]
+
+    def get_date_range(self) -> tuple[Optional[datetime], Optional[datetime]]:
+        """Return the oldest and newest conversation timestamps.
+
+        Returns:
+            Tuple of (oldest_datetime, newest_datetime), both may be None if
+            the vault is empty.
+        """
+        with self.session() as s:
+            oldest = s.scalar(select(sa.func.min(Conversation.created_at)))
+            newest = s.scalar(select(sa.func.max(Conversation.created_at)))
+            return oldest, newest
