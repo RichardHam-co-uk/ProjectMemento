@@ -16,11 +16,105 @@ from rich.table import Table
 console = Console()
 app = typer.Typer()
 
+# Sub-application for `vault import <provider> <file>`
+import_app = typer.Typer(help="Import conversations from a provider export.")
+app.add_typer(import_app, name="import")
+
 
 @app.command()
 def version() -> None:
     """Print the version of the Vault CLI."""
     typer.echo("LLM Memory Vault v0.1.0")
+
+
+@app.command()
+def init(
+    vault_path: Path = typer.Option(Path("vault_data"), help="Path to vault"),
+    timeout: int = typer.Option(30, help="Session timeout in minutes"),
+) -> None:
+    """Initialise a new vault and start an authenticated session.
+
+    Creates the vault directory structure, initialises the database schema,
+    derives a master key from your passphrase, and writes a time-limited
+    session token so subsequent commands don't ask for the passphrase again.
+    """
+    # ---- directory structure ------------------------------------------------
+    vault_path = vault_path.resolve()
+    if vault_path.exists() and (vault_path / "vault.db").exists():
+        console.print(
+            f"[yellow]Vault already exists at [bold]{vault_path}[/bold].[/yellow] "
+            "Nothing to do."
+        )
+        raise typer.Exit(code=0)
+
+    vault_path.mkdir(parents=True, exist_ok=True)
+    (vault_path / "blobs").mkdir(exist_ok=True)
+
+    # ---- database -----------------------------------------------------------
+    from vault.storage.db import VaultDB
+
+    db = VaultDB(vault_path / "vault.db")
+    db.init_schema()
+
+    # ---- passphrase & key derivation ----------------------------------------
+    from vault.security.crypto import KeyManager
+
+    passphrase: str = typer.prompt(
+        "Choose a passphrase (min 12 characters)",
+        hide_input=True,
+        confirmation_prompt=True,
+    )
+    if len(passphrase) < 12:
+        console.print("[red]Passphrase must be at least 12 characters.[/red]")
+        raise typer.Exit(code=1)
+
+    key_mgr = KeyManager(vault_path)
+    try:
+        master_key = key_mgr.derive_master_key(passphrase)
+    except Exception as exc:
+        console.print(f"[red]Key derivation failed:[/red] {exc}")
+        raise typer.Exit(code=1)
+
+    # ---- session token ------------------------------------------------------
+    from vault.security.session import SessionManager
+
+    session_mgr = SessionManager(vault_path, timeout_minutes=timeout)
+    token = session_mgr.create_session(master_key)
+
+    # ---- done ---------------------------------------------------------------
+    console.print(
+        Panel(
+            f"  Vault created at: [bold]{vault_path}[/bold]\n"
+            f"  Session expires in: [bold]{timeout} minutes[/bold]\n\n"
+            "  To authenticate in a new shell, set:\n"
+            f"    [bold cyan]export VAULT_TOKEN={token}[/bold cyan]\n"
+            f"    [bold cyan]export VAULT_PATH={vault_path}[/bold cyan]",
+            title="[green]Vault Initialised[/green]",
+            expand=False,
+        )
+    )
+
+
+@app.command()
+def lock(
+    vault_path: Path = typer.Option(Path("vault_data"), help="Path to vault"),
+) -> None:
+    """Lock the vault by destroying the current session token.
+
+    The on-disk session file is overwritten with random bytes before deletion
+    so the encrypted master key cannot be recovered from disk.
+    """
+    from vault.security.session import SessionManager
+
+    vault_path = vault_path.resolve()
+    session_mgr = SessionManager(vault_path)
+
+    if not session_mgr.is_active():
+        console.print("[dim]No active session found — vault is already locked.[/dim]")
+        raise typer.Exit(code=0)
+
+    session_mgr.clear_session()
+    console.print("[green]Vault locked.[/green] Session token destroyed.")
 
 
 @app.command("list")
@@ -134,6 +228,66 @@ def stats(
         lines.append("  Date Range:  [dim]No conversations yet[/dim]")
 
     console.print(Panel("\n".join(lines), title="Vault Statistics", expand=False))
+
+
+@import_app.command("chatgpt")
+def import_chatgpt(
+    file: Path = typer.Argument(..., help="Path to conversations.json from ChatGPT export"),
+    vault_path: Path = typer.Option(Path("vault_data"), help="Path to vault"),
+) -> None:
+    """Import conversations from a ChatGPT data export.
+
+    Expects the ``conversations.json`` file produced by ChatGPT's
+    Settings → Data Controls → Export Data feature.  Conversations already
+    present in the vault are silently skipped (idempotent).
+    """
+    vault_path = vault_path.resolve()
+    db_file = vault_path / "vault.db"
+    if not db_file.exists():
+        console.print(
+            "[red]Vault not initialised.[/red] "
+            f"Expected database at [bold]{db_file}[/bold].\n"
+            "Run [bold]vault init[/bold] to create a new vault."
+        )
+        raise typer.Exit(code=1)
+
+    if not file.exists():
+        console.print(f"[red]File not found:[/red] {file}")
+        raise typer.Exit(code=1)
+
+    from vault.ingestion.chatgpt import ChatGPTAdapter, run_import
+    from vault.storage.db import VaultDB
+
+    if not ChatGPTAdapter().validate_format(file):
+        console.print(
+            f"[red]File does not look like a ChatGPT export:[/red] {file}\n"
+            "Expected a JSON array with 'mapping' and 'create_time' fields."
+        )
+        raise typer.Exit(code=1)
+
+    db = VaultDB(db_file)
+
+    with console.status("[bold cyan]Importing conversations…[/bold cyan]"):
+        result = run_import(file_path=file, db=db)
+
+    # Summary panel
+    lines = [
+        f"  Imported:  [bold green]{result.imported}[/bold green]",
+        f"  Skipped:   [bold yellow]{result.skipped}[/bold yellow]  (already in vault)",
+        f"  Failed:    [bold red]{result.failed}[/bold red]",
+    ]
+    if result.errors:
+        lines.append("")
+        lines.append("  Errors:")
+        for err in result.errors[:5]:
+            lines.append(f"    [red]•[/red] {err}")
+        if len(result.errors) > 5:
+            lines.append(f"    … and {len(result.errors) - 5} more")
+
+    console.print(Panel("\n".join(lines), title="Import Complete", expand=False))
+
+    if result.failed > 0 and result.imported == 0:
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
