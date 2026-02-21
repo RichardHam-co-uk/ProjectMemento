@@ -212,6 +212,32 @@ class VaultDB:
                 return None, None
             return row[0], row[1]
 
+    def get_conversation_by_prefix(self, prefix: str) -> "Conversation | None":
+        """Find a conversation by its full ID or a unique prefix.
+
+        Tries an exact match first, then falls back to a LIKE prefix search.
+        Returns None if no match or if the prefix is ambiguous (2+ matches).
+
+        Args:
+            prefix: Full 64-char ID or leading hex substring.
+
+        Returns:
+            The matching Conversation, or None.
+        """
+        with self.get_session() as session:
+            exact = session.get(Conversation, prefix)
+            if exact is not None:
+                return exact
+            stmt = (
+                select(Conversation)
+                .where(Conversation.id.like(f"{prefix}%"))
+                .limit(2)
+            )
+            results = list(session.scalars(stmt).all())
+            if len(results) == 1:
+                return results[0]
+            return None
+
     def get_source_counts(self) -> dict[str, int]:
         """Get conversation counts grouped by source provider.
 

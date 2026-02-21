@@ -5,8 +5,10 @@ Commands:
   version      Print the CLI version.
   init         Initialise a new vault (key derivation + schema setup).
   list         List conversations stored in the vault.
+  show         Decrypt and display a single conversation.
   stats        Show vault statistics.
   import       Import conversations from a provider export file.
+  lock         Clear the active session (lock the vault).
 """
 from __future__ import annotations
 
@@ -261,15 +263,17 @@ def list_conversations(
         title=f"Conversations ({len(conversations)} shown)",
         show_lines=False,
     )
+    table.add_column("ID", style="dim", no_wrap=True)
     table.add_column("Source", style="cyan", no_wrap=True)
     table.add_column("Title", style="white")
-    table.add_column("Messages", justify="right", style="green")
+    table.add_column("Msgs", justify="right", style="green")
     table.add_column("Created", style="dim")
 
     for conv in conversations:
         table.add_row(
+            conv.id[:8],
             conv.source,
-            conv.title[:60] + ("…" if len(conv.title) > 60 else ""),
+            conv.title[:55] + ("…" if len(conv.title) > 55 else ""),
             str(conv.message_count),
             conv.created_at.strftime("%Y-%m-%d") if conv.created_at else "—",
         )
@@ -449,6 +453,138 @@ def import_data(
     # Exit with error code if all conversations failed
     if result.failed > 0 and result.imported == 0 and result.skipped == 0:
         raise typer.Exit(code=1)
+
+
+@app.command()
+def show(
+    conv_id: str = typer.Argument(
+        ..., help="Conversation ID or unique prefix (from 'vault list')."
+    ),
+    vault_path: Path = typer.Option(
+        Path("vault_data"),
+        "--vault-path",
+        "-p",
+        help="Path to the vault directory.",
+    ),
+    metadata: bool = typer.Option(
+        False,
+        "--metadata",
+        "-m",
+        help="Show metadata only (no decrypted message content).",
+    ),
+    limit: int = typer.Option(
+        100,
+        "--limit",
+        "-n",
+        help="Maximum number of messages to display.",
+    ),
+) -> None:
+    """Decrypt and display a conversation from the vault.
+
+    Accepts the full conversation ID or a unique prefix (at least 4 hex
+    characters). Use 'vault list' to browse available IDs.
+
+    With --metadata only the conversation header is shown; without it every
+    message is decrypted and printed to the terminal.
+    """
+    from vault.security.crypto import KeyManager
+    from vault.storage.blobs import BlobStore
+    from vault.storage.db import VaultDB
+
+    vault_path = vault_path.resolve()
+    db_path = vault_path / "vault.db"
+    blobs_path = vault_path / "blobs"
+
+    if not db_path.exists():
+        err_console.print(
+            f"[red]No vault found at {vault_path}.[/red] "
+            "Run [bold]vault init[/bold] first."
+        )
+        raise typer.Exit(code=1)
+
+    db = VaultDB(db_path)
+    conv = db.get_conversation_by_prefix(conv_id)
+
+    if conv is None:
+        # Give a helpful hint if the prefix matched multiple or zero records
+        err_console.print(
+            f"[red]No unique conversation found matching:[/red] {conv_id!r}\n"
+            "The prefix may be ambiguous or the ID does not exist. "
+            "Run [bold]vault list[/bold] to see available IDs."
+        )
+        raise typer.Exit(code=1)
+
+    # Always show the conversation header
+    date_str = conv.created_at.strftime("%Y-%m-%d %H:%M UTC") if conv.created_at else "unknown"
+    console.print(
+        Panel(
+            f"[bold]{conv.title}[/bold]\n\n"
+            f"[dim]Source:[/dim]    {conv.source}\n"
+            f"[dim]ID:[/dim]        {conv.id}\n"
+            f"[dim]Messages:[/dim]  {conv.message_count}\n"
+            f"[dim]Created:[/dim]   {date_str}\n"
+            f"[dim]Sensitivity:[/dim] {conv.sensitivity.value}",
+            border_style="cyan",
+        )
+    )
+
+    if metadata:
+        return
+
+    # Authenticate before decrypting blobs
+    master_key = _authenticate(vault_path)
+    km = KeyManager(vault_path)
+    blob_store = BlobStore(blobs_path, km)
+
+    messages = db.get_messages_for_conversation(conv.id)
+    truncated = len(messages) > limit
+    messages = messages[:limit]
+
+    console.print()
+    for msg in messages:
+        actor = msg.actor.value
+        actor_style = {"user": "bold cyan", "assistant": "bold green"}.get(actor, "bold yellow")
+        ts = msg.timestamp.strftime("%H:%M") if msg.timestamp else ""
+
+        try:
+            raw = blob_store.retrieve(msg.content_blob_uuid, master_key, conv.id)
+            content = raw.decode("utf-8", errors="replace")
+        except Exception as exc:
+            content = f"[red][decryption error: {exc}][/red]"
+
+        console.print(f"[{actor_style}]{actor}[/{actor_style}] [dim]{ts}[/dim]")
+        # Wrap long content at 120 chars per line to keep output readable
+        for line in content.splitlines():
+            console.print(f"  {line}" if line else "")
+        console.print()
+
+    if truncated:
+        console.print(
+            f"[dim]… showing {limit} of {conv.message_count} messages. "
+            "Pass [bold]--limit N[/bold] to see more.[/dim]"
+        )
+
+
+@app.command()
+def lock(
+    vault_path: Path = typer.Option(
+        Path("vault_data"),
+        "--vault-path",
+        "-p",
+        help="Path to the vault directory.",
+    ),
+) -> None:
+    """Clear the active session and lock the vault.
+
+    After locking, the next command that requires authentication will prompt
+    for the passphrase again.
+    """
+    from vault.security.session import SessionManager
+
+    vault_path = vault_path.resolve()
+    sm = SessionManager(vault_path)
+    sm.clear_session()
+    console.print("[green]Vault locked.[/green] Session cleared.")
 
 
 if __name__ == "__main__":
