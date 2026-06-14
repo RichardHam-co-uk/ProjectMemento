@@ -1,0 +1,10 @@
+[Unit]
+Description=ProjectMemento — Export approved memories to Obsidian
+Documentation=https://github.com/RichardHam-co-uk/ProjectMemento
+
+[Timer]
+OnCalendar=*-*-* 22:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

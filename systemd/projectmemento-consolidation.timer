@@ -1,0 +1,10 @@
+[Unit]
+Description=ProjectMemento — Daily memory consolidation
+Documentation=https://github.com/RichardHam-co-uk/ProjectMemento
+
+[Timer]
+OnCalendar=*-*-* 23:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
