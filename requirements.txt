@@ -1,0 +1,29 @@
+# ProjectMemento — Python dependencies
+# Phase 1 foundation: SQLite-backed shared memory layer
+
+# Core
+pydantic>=2.5.0
+sqlalchemy>=2.0.25
+
+# CLI
+typer>=0.9.0
+pyyaml>=6.0.1
+rich>=13.7.0
+
+# API server (Phase 1+)
+fastapi>=0.109.0
+uvicorn>=0.27.0
+python-multipart>=0.0.22
+
+# Security (Phase 1+)
+cryptography>=46.0.5
+argon2-cffi>=23.1.0
+
+# Testing
+pytest>=8.0.0
+
+# Dev tools
+black>=24.1.0
+ruff>=0.1.0
+mypy>=1.8.0
+pre-commit>=3.6.0

@@ -1,0 +1,17 @@
+[Unit]
+Description=ProjectMemento — Generate staged memory report
+Documentation=https://github.com/RichardHam-co-uk/ProjectMemento
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -m memento.cli report-staged
+WorkingDirectory=/home/richardham/Documents/Github/ProjectMemento
+StandardOutput=append:/var/log/projectmemento/staged-report.log
+StandardError=append:/var/log/projectmemento/staged-report-error.log
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/richardham/Documents/Github/ProjectMemento/vault_data /var/log/projectmemento
+PrivateTmp=true

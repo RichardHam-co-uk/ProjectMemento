@@ -21,16 +21,20 @@ The new delivery path keeps the original secure local vault foundation, but exte
 Keep the original foundation because it remains essential.
 
 - [x] Repository scaffolding and AI readiness
-- [ ] Poetry project with all dependencies (`pyproject.toml`)
-- [ ] Pydantic configuration models and pre-commit hooks
-- [ ] SQLAlchemy ORM models and migration system
-- [ ] Argon2id key derivation and Fernet encryption
-- [ ] Encrypted blob storage
-- [ ] Database wrapper and `vault init` CLI command
+- [x] Poetry project with all dependencies (`pyproject.toml`)
+- [x] Pydantic configuration models and pre-commit hooks
+- [x] SQLAlchemy ORM models and migration system
+- [x] Argon2id key derivation and Fernet encryption
+- [x] Encrypted blob storage
+- [x] Minimal deterministic JSONL memory backend and `vault init` CLI command
+- [x] Canonical staged-memory models and CLI commands: `memory stage`, `memory list`, `memory show`, `memory approve`, `memory reject`, `memory search`
+- [x] SQLite-backed shared memory layer (`src/memento/`) with Memory, Fact, Preference, Session models
+- [x] Python API (`MementoAPI`) for storing/retrieving memories
+- [x] Systemd timer/service definitions for periodic memory consolidation
 - [ ] Session token management
 - [ ] Base ingestion adapter and ChatGPT JSON adapter
 - [ ] Import pipeline with deduplication
-- [ ] CLI commands: `init`, `import`, `list`, `show`, `stats`
+- [ ] CLI commands: `import`, `list`, `show`, `stats` for conversation vault records
 - [ ] Error handling and edge case coverage
 
 **Deliverable:** Import ChatGPT/LLM exports into encrypted local storage with searchable metadata.
