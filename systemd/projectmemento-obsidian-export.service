@@ -1,0 +1,17 @@
+[Unit]
+Description=ProjectMemento — Obsidian markdown export
+Documentation=https://github.com/RichardHam-co-uk/ProjectMemento
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -m memento.cli export-obsidian
+WorkingDirectory=/home/richardham/Documents/Github/ProjectMemento
+StandardOutput=append:/var/log/projectmemento/obsidian-export.log
+StandardError=append:/var/log/projectmemento/obsidian-export-error.log
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/richardham/Documents/Github/ProjectMemento/vault_data /home/richardham/Obsidian /var/log/projectmemento
+PrivateTmp=true

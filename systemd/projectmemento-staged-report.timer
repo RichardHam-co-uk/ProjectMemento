@@ -1,0 +1,10 @@
+[Unit]
+Description=ProjectMemento — Periodic staged memory report
+Documentation=https://github.com/RichardHam-co-uk/ProjectMemento
+
+[Timer]
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

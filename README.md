@@ -60,18 +60,22 @@ poetry install
 # Initialize the vault
 poetry run vault init
 
-# Import ChatGPT conversations
+# Stage and govern a canonical memory proposal
+poetry run vault memory stage memory.yaml
+poetry run vault memory list --status staged
+poetry run vault memory show <memory-id>
+poetry run vault memory approve <memory-id> --approved-by richard
+poetry run vault memory search "client agent appliance dashboard"
+
+# Import ChatGPT conversations (planned vault workflow)
 poetry run vault import chatgpt <export-file.json>
 
-# Explore your memory
+# Explore conversation vault data (planned vault workflow)
 poetry run vault list
 poetry run vault show <conversation-id>
 poetry run vault stats
 
-# Future universal memory operations
-poetry run vault memory stage <memory-file.yaml>
-poetry run vault memory approve <memory-id>
-poetry run vault memory search "client agent appliance dashboard"
+# Future Obsidian export
 poetry run vault export obsidian
 
 # Run tests
@@ -137,6 +141,7 @@ ProjectMemento should support more than conversation archive records:
 | [Security Playbook](docs/playbooks/security.md) | Data security and incident response |
 | [Roadmap](ROADMAP.md) | Delivery roadmap for vault, universal memory, API, Obsidian and agent integrations |
 | [Phase 1 Plan](docs/intro/PHASE1_DETAILED_PLAN_1.md) | Detailed Phase 1 tasks and milestones |
+| [Phase 1 Foundation Memory Layer](docs/implementation/phase-1-foundation-memory-layer.md) | Minimal deterministic JSONL memory layer, CLI, governance defaults and future timer/service path |
 
 ## AI Readiness
 
